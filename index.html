@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Opérette 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* layout : liste des chansons à gauche (sélecteur en mobile), partition de travail à droite, barre de modes collante */
+:root{
+  --bg:#f6f3f5; --surface:#fffdfe; --fg:#2a1d26; --muted:#6f5e69; --line:#e3d8df;
+  --accent:#7a1f45; --accent-soft:#f3e3ea; --gold:#a8761d; --ok:#2f6b47; --ok-soft:#e2f0e7;
+  --display:"Poiret One","Didot","Bodoni 72",Georgia,serif;
+  --body:"Lora",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1a1318; --surface:#241a21; --fg:#f1e7ed; --muted:#b4a1ad; --line:#3a2c35;
+  --accent:#e58cb0; --accent-soft:#3a2230; --gold:#e0b45e; --ok:#86cfa2; --ok-soft:#1f3328; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1a1318; --surface:#241a21; --fg:#f1e7ed; --muted:#b4a1ad; --line:#3a2c35;
+  --accent:#e58cb0; --accent-soft:#3a2230; --gold:#e0b45e; --ok:#86cfa2; --ok-soft:#1f3328; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;padding-inline:16px}
+.wrap{max-width:1080px;margin:0 auto;padding-block:24px 64px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:32px}
+header.top{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:16px}
+h1{font-family:var(--display);font-weight:400;font-size:2.4rem;margin:0;letter-spacing:.02em;color:var(--accent)}
+.progress{font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+.progress b{color:var(--ok);font-weight:500}
+nav.list{display:flex;flex-direction:column;gap:2px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start}
+nav.list button{all:unset;cursor:pointer;padding:9px 12px;border-radius:6px;display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--fg)}
+nav.list button:hover{background:var(--accent-soft)}
+nav.list button[aria-current="true"]{background:var(--accent);color:var(--surface)}
+nav.list button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+nav.list .oe{display:block;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;opacity:.7}
+nav.list .cnt{font-family:var(--mono);font-size:.75rem;font-variant-numeric:tabular-nums;opacity:.8;white-space:nowrap}
+.mobile-pick{display:none}
+main{min-width:0}
+.song-head .oe{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gold)}
+h2{font-family:var(--display);font-weight:400;font-size:2rem;margin:4px 0 16px;text-wrap:balance}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:2;background:var(--bg);padding-block:10px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;border-bottom:1px solid var(--line);margin-bottom:20px}
+.modes{display:flex;flex-wrap:wrap;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:3px}
+.modes button{all:unset;cursor:pointer;padding:6px 12px;border-radius:5px;font-size:.9rem}
+.modes button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
+.modes button:focus-visible,.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.opts{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:.88rem;color:var(--muted)}
+.opts label{display:flex;gap:6px;align-items:center}
+.opts input[type=range]{accent-color:var(--accent);width:110px}
+.btn{all:unset;cursor:pointer;padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);font-size:.88rem}
+.btn:hover{border-color:var(--accent)}
+.help{font-size:.88rem;color:var(--muted);margin:0 0 20px;max-width:62ch}
+.couplet{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin-bottom:16px}
+.couplet.su{border-color:var(--ok);background:linear-gradient(var(--ok-soft),var(--ok-soft)) top/100% 3px no-repeat,var(--surface)}
+.chead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.chead h3{margin:0;font-family:var(--mono);font-size:.78rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--accent)}
+.chead .acts{display:flex;gap:6px;flex-wrap:wrap}
+.chk{display:flex;gap:6px;align-items:center;font-size:.85rem;color:var(--muted);cursor:pointer}
+.chk input{accent-color:var(--ok)}
+.lines{margin:0;padding:0;list-style:none;font-size:1.12rem;line-height:1.75}
+.lines li{min-height:1.75em}
+.w.hid{cursor:pointer;color:transparent;border-bottom:2px solid var(--accent);border-radius:1px;background:var(--accent-soft);user-select:none}
+.w.ini{cursor:pointer;color:var(--muted)}
+.w.ini::first-letter{color:var(--fg)}
+.w.shown{color:var(--accent);background:none;border:none}
+.w.hid:hover,.w.ini:hover{outline:1px dashed var(--accent)}
+.lines li.veil{color:transparent;background:repeating-linear-gradient(90deg,var(--line) 0 70%,transparent 70% 100%) left center/100% 2px no-repeat;user-select:none}
+.lines li.next{color:var(--muted);font-style:italic}
+.stepbar{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+@media (max-width:760px){
+  .wrap{grid-template-columns:minmax(0,1fr);gap:16px}
+  nav.list{display:none}
+  .mobile-pick{display:block}
+  .mobile-pick select{width:100%;font:inherit;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+  h1{font-size:1.9rem}
+  .couplet{padding:14px}
+}
+@media (prefers-reduced-motion:no-preference){.couplet{transition:border-color .2s}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Opérette 2027</h1>
+    <div class="progress" id="progress"></div>
+  </header>
+  <nav class="list" id="nav" aria-label="Chansons"></nav>
+  <main>
+    <div class="mobile-pick"><label for="pick" class="help" style="display:block;margin:0 0 6px">Chanson</label><select id="pick"></select></div>
+    <div class="song-head"><div class="oe" id="oe"></div><h2 id="titre"></h2></div>
+    <div class="bar">
+      <div class="modes" role="group" aria-label="Mode d'entraînement" id="modes">
+        <button data-m="lire">Lire</button>
+        <button data-m="ini">Initiales</button>
+        <button data-m="trous">Mots masqués</button>
+        <button data-m="ligne">Ligne par ligne</button>
+      </div>
+      <div class="opts" id="opts"></div>
+    </div>
+    <p class="help" id="help"></p>
+    <div id="couplets"></div>
+  </main>
+</div>
+
+<script>
+const SONGS=[
+ {id:"gosse",oe:"Gosse de riche",titre:"Finale 1 (chic, chic, chic)",couplets:[
+  {l:"Couplet 1",v:["C’est en vérité d’une grande simplicité ;","Dans votre castel Monsieur sera mieux qu’à l’hôtel,","Et nous peindra s’il le veut, dans votre jardin sous le ciel bleu"]},
+  {l:"Couplet 2",v:["Quand on est chic, chic, chic comme il le dit","C’est vrai qu’l’honneur est surtout pour celui","Qui près de lui s’introduit","Comm’tout le prouve aujourd’hui","Quand on est chic, chic, chic comme il le dit","Par qui donc être ébloui ?","On est le soleil qui luit,","Quand on est chic, chic, chic comme il le dit"]}]},
+ {id:"hasard",oe:"Le hasard",titre:"Le hasard",couplets:[
+  {l:"Couplet 1",v:["C’est lui qui mène la vie humaine","Sans que l’on s’en doute, ici bas,","Il guide tous nos pas, c’est lui, barbare,","Qui nous sépare","Et c’est lui, le roublard,","Qui nous rapproch’plus tard.","Quelle est la cause de toute chose ?","Qui nous conduit comm’des moutards ?","C’est le hasard, c’est le hasard !"]},
+  {l:"Couplet 2",v:["Devenir Archimède en prenant un bain,","C’est du hasard !"]},
+  {l:"Couplet 3",v:["Etre un simple épicier et s’appeler Potin,","C’est du hasard !"]},
+  {l:"Couplet 4",v:["C’est lui qui mène la vie humaine","Sans que l’on s’en doute ici bas","Il guide tous nos pas,","C’est lui le barbare qui nous sépare","Et c’est lui, le roublard,","Qui nous rapproch’ plus tard","Quelle est la cause de toute chose ?","Qui nous conduit comm’ des moutards ?","C’est le hasard ! c’est le hasard !","Qui nous agite ? qui fait qu’on se quitte ?","Le hasard ! Le hasard !","Qu’est-ce qui nous rapproche ? Qui nous rabiboche ?","Encore le hasard !","Ah ! Qui nous fait la nique ? Nous tourne en bourrique ?","Oui, c’est le hasard !"]}]},
+ {id:"madame",oe:"Madame 21",titre:"Finale",couplets:[
+  {l:"Couplet",v:["Nous sommes tous comme des papas","Attendant anxieux le résultat :","Est-ce une fille, un garçon ?","Dites-le sans façon,","Les acteurs ont peur autant que les auteurs !","Si vous aimez tout ça, nous s’rons contents","Mon p’tit système aura-t-il su vous plaire ?","Nous avons joué tout ça pour vous distraire","Et maintenant c’est l’instant palpitant !","Quand on aim’quéqu’chose on l’dit, sapristi,","On l’dit et puis c’est fini !","La seule chose que l’on souhaite,","C’est qu’après cette opérette","Chacun d’vous répète","Elle n’est pas du tout si mal que ça !","On s’y ras’ bien moins qu’à l’opéra !","C’est honnête, pas trop bête,","On y r’viendra !","Elle n’est pas si pas si mal,","Non pas si mal que ça !"]}]},
+ {id:"phi1",oe:"Phi-Phi 01",titre:"Les modèles",couplets:[
+  {l:"Couplet 1",v:["Oui, nous sommes les petites modèles,","A notre atelier toujours fidèles,","Nous posons les statues chez Lady Fifi,","Hélas ! Nous n’en aurons pas la gloire,","Il n’y a qu’elle qui s’ra connue d’l’histoire","Grâce à nous, c’est notoire,","Elle en aura tout le profit, fi !"]},
+  {l:"Couplet 2",v:["C’est moi qui ai posé pour le dos de la fameuse Diane d’Ephèse,","Moi, c’est ma tête qui servit pour la Victoire de Samothrace"]}]},
+ {id:"phi7",oe:"Phi-Phi 07",titre:"Pour l’amour Ardimedon",couplets:[
+  {l:"Couplet 1",v:["Il vous dit simplement","De quitter votre vêtement","Pour admirer votre plastique"]},
+  {l:"Couplet 2",v:["Ça c’est unique, et très comique,","Ce grand artiste qui le choisit pour","Oui pour qu’il fasse, ça c’est cocasse,","Oui pour qu’il fasse l’amour !"]},
+  {l:"Couplet 3",v:["Pour l’amour, pour l’amour,","Il a des dispositions","A Cythèr’ il prit des leçons","Il alla même à Singapour, pour l’amour, pour l’amour","Il est tellement en effet, fait !","Qu’pour nous plaire, il veut faire, nuit et jour, l’amour"]},
+  {l:"Couplet 4",v:["Si parmi nous il reste, on va le débaucher,","On l’amusera, on le dorlott’ra, on l’adorera.","De grand cœur disons-lui donc :","Ardimedon ! Ardimedon !","Ce nom contient tout un programme","Qui plaît aux femmes. Il le porte avec aplomb","Ardimedon ! Ardimedon !","Joyeusement, que l’on acclame","Que l’on acclame, que l’on acclame","Ardimedon ! Que l’on acclame","Ardimedon, Ardimedon !"]}]},
+ {id:"plm7",oe:"PLM 07",titre:"Tout nus",couplets:[
+  {l:"Couplet",v:["Ça n’se fait pas, ça n’se fait pas,","Quand on est des gens du meilleur des mondes"]}]},
+ {id:"plm8",oe:"PLM 08",titre:"Ensemble",couplets:[
+  {l:"Couplet 1",v:["Avant d’aller au wagon restaurant,","Restons en rang, en admirant","Le point de vue indiqué par le guide,","La nuit limpide, la mer liquide"]},
+  {l:"Couplet 2",v:["On dira tout ce que l’on voudra","C’est un décor","Oui c’est un vrai décor d’opéra","La mer, les cieux,","Quel tableau délicieux !","C’est presque mieux","Tellement c’est natur’","Que toutes les peintur’s","Que l’on voit sur les murs","Qui r’présentent la “cott” d’azur !"]}]}
+];
+
+const HELP={
+ lire:"Lisez le texte à voix haute deux ou trois fois avant de passer aux autres modes.",
+ ini:"Seule la première lettre de chaque mot est visible. Récitez, puis cliquez sur un mot pour le vérifier.",
+ trous:"Une partie des mots est masquée au hasard. Augmentez la proportion à mesure que vous progressez. Cliquez sur un trou pour le révéler.",
+ ligne:"Récitez la ligne suivante de mémoire, puis révélez-la pour vérifier. Les initiales de la ligne attendue peuvent servir d’indice."
+};
+
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const S={song:store.get("op27.song",SONGS[0].id),mode:store.get("op27.mode","lire"),pct:store.get("op27.pct",40),hint:store.get("op27.hint",true),su:store.get("op27.su",{}),seed:Date.now()%100000,step:{}};
+if(!SONGS.find(s=>s.id===S.song))S.song=SONGS[0].id;
+
+const WORD=/([\p{L}\p{N}’'\-]+)/u;
+function rng(seed){let s=seed>>>0||1;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+function esc(t){return t.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function initial(w){const m=w.match(/^([^\p{L}\p{N}]*[\p{L}\p{N}])/u);return m?m[1]+"·".repeat(Math.max(1,Math.min(w.length-m[1].length,8))):w}
+
+function renderLine(line,mode,r){
+  return line.split(WORD).map((p,i)=>{
+    if(i%2===0)return esc(p);
+    if(mode==="ini")return `<span class="w ini" data-w="${esc(p)}" tabindex="0">${esc(initial(p))}</span>`;
+    if(mode==="trous"&&r()<S.pct/100)return `<span class="w hid" data-w="${esc(p)}" tabindex="0">${esc(p)}</span>`;
+    return esc(p);
+  }).join("");
+}
+function hintLine(line){return line.split(WORD).map((p,i)=>i%2?esc(initial(p)):esc(p)).join("")}
+
+function song(){return SONGS.find(s=>s.id===S.song)}
+function key(c){return S.song+"|"+c}
+
+function renderNav(){
+  const nav=document.getElementById("nav"),pick=document.getElementById("pick");
+  nav.innerHTML=SONGS.map(s=>{const n=s.couplets.filter(c=>S.su[s.id+"|"+c.l]).length;
+    return `<button data-s="${s.id}" aria-current="${s.id===S.song}"><span><span class="oe">${esc(s.oe)}</span>${esc(s.titre)}</span><span class="cnt">${n}/${s.couplets.length}</span></button>`}).join("");
+  pick.innerHTML=SONGS.map(s=>`<option value="${s.id}"${s.id===S.song?" selected":""}>${esc(s.oe)} · ${esc(s.titre)}</option>`).join("");
+  const tot=SONGS.reduce((a,s)=>a+s.couplets.length,0),ok=Object.values(S.su).filter(Boolean).length;
+  document.getElementById("progress").innerHTML=`<b>${ok}</b> couplets sus sur ${tot}`;
+}
+function renderOpts(){
+  const o=document.getElementById("opts");
+  if(S.mode==="trous")o.innerHTML=`<label for="pct">Masqués <input type="range" id="pct" min="10" max="100" step="10" value="${S.pct}"> <span style="font-family:var(--mono);font-variant-numeric:tabular-nums">${S.pct} %</span></label><button class="btn" id="tirage">Nouveau tirage</button><button class="btn" id="all">Tout révéler</button>`;
+  else if(S.mode==="ini")o.innerHTML=`<button class="btn" id="all">Tout révéler</button><button class="btn" id="tirage">Remasquer</button>`;
+  else if(S.mode==="ligne")o.innerHTML=`<label for="hint"><input type="checkbox" id="hint"${S.hint?" checked":""}> Indice (initiales)</label><button class="btn" id="resetall">Tout recommencer</button>`;
+  else o.innerHTML="";
+}
+function renderCouplets(){
+  const s=song(),r=rng(S.seed);
+  document.getElementById("oe").textContent=s.oe;
+  document.getElementById("titre").textContent=s.titre;
+  document.getElementById("help").textContent=HELP[S.mode];
+  document.querySelectorAll("#modes button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===S.mode));
+  document.getElementById("couplets").innerHTML=s.couplets.map((c,ci)=>{
+    const k=key(c.l),su=!!S.su[k];let body;
+    if(S.mode==="ligne"){
+      const st=S.step[k]||0;
+      body=`<ol class="lines">${c.v.map((ln,i)=>i<st?`<li>${esc(ln)}</li>`:i===st?(S.hint?`<li class="next">${hintLine(ln)}</li>`:`<li class="veil">${esc(ln)}</li>`):`<li class="veil">${esc(ln)}</li>`).join("")}</ol>
+      <div class="stepbar"><button class="btn" data-next="${ci}"${st>=c.v.length?" disabled":""}>${st>=c.v.length?"Couplet terminé":"Révéler la ligne "+(st+1)+" / "+c.v.length}</button><button class="btn" data-reset="${ci}">Recommencer</button></div>`;
+    }else body=`<ol class="lines">${c.v.map(ln=>`<li>${S.mode==="lire"?esc(ln):renderLine(ln,S.mode,r)}</li>`).join("")}</ol>`;
+    return `<section class="couplet${su?" su":""}"><div class="chead"><h3>${esc(c.l)}</h3><label class="chk"><input type="checkbox" id="su-${s.id}-${ci}" data-su="${ci}"${su?" checked":""}> Je le connais</label></div>${body}</section>`;
+  }).join("");
+}
+function render(){renderNav();renderOpts();renderCouplets()}
+
+function reveal(el){if(!el.classList.contains("w")||el.classList.contains("shown"))return;el.textContent=el.dataset.w;el.classList.remove("hid","ini");el.classList.add("shown")}
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,span.w,input");if(!t)return;
+  if(t.dataset.s){S.song=t.dataset.s;store.set("op27.song",S.song);S.seed++;render();window.scrollTo({top:0});return}
+  if(t.dataset.m){S.mode=t.dataset.m;store.set("op27.mode",S.mode);S.seed++;renderOpts();renderCouplets();return}
+  if(t.classList.contains("w")){reveal(t);return}
+  if(t.id==="tirage"){S.seed++;renderCouplets();return}
+  if(t.id==="all"){document.querySelectorAll("span.w").forEach(reveal);return}
+  if(t.id==="resetall"){song().couplets.forEach(c=>delete S.step[key(c.l)]);renderCouplets();return}
+  if(t.dataset.next!=null){const c=song().couplets[+t.dataset.next],k=key(c.l);S.step[k]=Math.min((S.step[k]||0)+1,c.v.length);renderCouplets();return}
+  if(t.dataset.reset!=null){delete S.step[key(song().couplets[+t.dataset.reset].l)];renderCouplets();return}
+});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList&&e.target.classList.contains("w")){e.preventDefault();reveal(e.target)}});
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.dataset.su!=null){const k=key(song().couplets[+t.dataset.su].l);S.su[k]=t.checked;if(!t.checked)delete S.su[k];store.set("op27.su",S.su);t.closest(".couplet").classList.toggle("su",t.checked);renderNav();return}
+  if(t.id==="hint"){S.hint=t.checked;store.set("op27.hint",S.hint);renderCouplets();return}
+  if(t.id==="pick"){S.song=t.value;store.set("op27.song",S.song);S.seed++;render()}
+});
+document.addEventListener("input",e=>{if(e.target.id==="pct"){S.pct=+e.target.value;store.set("op27.pct",S.pct);e.target.nextElementSibling.textContent=S.pct+" %";renderCouplets()}});
+render();
+</script>
+</body>
+</html>
