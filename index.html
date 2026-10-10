@@ -23,7 +23,7 @@
   --bg:#1a1318; --surface:#241a21; --fg:#f1e7ed; --muted:#b4a1ad; --line:#3a2c35;
   --accent:#e58cb0; --accent-soft:#3a2230; --gold:#e0b45e; --ok:#86cfa2; --ok-soft:#1f3328; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;padding-inline:16px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;padding-inline:16px}
 .wrap{max-width:1080px;margin:0 auto;padding-block:24px 64px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:32px}
 header.top{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:16px}
 h1{font-family:var(--display);font-weight:400;font-size:2.4rem;margin:0;letter-spacing:.02em;color:var(--accent)}
@@ -50,18 +50,19 @@ h2{font-family:var(--display);font-weight:400;font-size:2rem;margin:4px 0 16px;t
 .opts input[type=range]{accent-color:var(--accent);width:110px}
 .btn{all:unset;cursor:pointer;padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);font-size:.88rem}
 .btn:hover{border-color:var(--accent)}
+.btn[disabled]{opacity:.5;cursor:default}
+.btn[disabled]:hover{border-color:var(--line)}
 .help{font-size:.88rem;color:var(--muted);margin:0 0 20px;max-width:62ch}
 .couplet{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin-bottom:16px}
 .couplet.su{border-color:var(--ok);background:linear-gradient(var(--ok-soft),var(--ok-soft)) top/100% 3px no-repeat,var(--surface)}
 .chead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
 .chead h3{margin:0;font-family:var(--mono);font-size:.78rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--accent)}
-.chead .acts{display:flex;gap:6px;flex-wrap:wrap}
 .chk{display:flex;gap:6px;align-items:center;font-size:.85rem;color:var(--muted);cursor:pointer}
 .chk input{accent-color:var(--ok)}
 .lines{margin:0;padding:0;list-style:none;font-size:1.12rem;line-height:1.75}
 .lines li{min-height:1.75em}
 .w.hid{cursor:pointer;color:transparent;border-bottom:2px solid var(--accent);border-radius:1px;background:var(--accent-soft);user-select:none}
-.w.ini{cursor:pointer;color:var(--muted)}
+.w.ini{cursor:pointer;color:var(--muted);display:inline-block}
 .w.ini::first-letter{color:var(--fg)}
 .w.shown{color:var(--accent);background:none;border:none}
 .w.hid:hover,.w.ini:hover{outline:1px dashed var(--accent)}
@@ -113,7 +114,7 @@ const SONGS=[
   {l:"Couplet 1",v:["C’est lui qui mène la vie humaine","Sans que l’on s’en doute, ici bas,","Il guide tous nos pas, c’est lui, barbare,","Qui nous sépare","Et c’est lui, le roublard,","Qui nous rapproch’plus tard.","Quelle est la cause de toute chose ?","Qui nous conduit comm’des moutards ?","C’est le hasard, c’est le hasard !"]},
   {l:"Couplet 2",v:["Devenir Archimède en prenant un bain,","C’est du hasard !"]},
   {l:"Couplet 3",v:["Etre un simple épicier et s’appeler Potin,","C’est du hasard !"]},
-  {l:"Couplet 4",v:["Qu'est-ce qui nous agite ? qui fait qu’on se quitte ?","Le hasard, le hasard !","Qu’est-ce qui nous rapproche ? Qui nous rabiboche ?","Encore le hasard !","Ah ! Qui nous fait la nique ? Nous tourne en bourrique ?","Oui, c’est le hasard !"]}]},
+  {l:"Couplet 4",v:["Qu’est-ce qui nous agite ? qui fait qu’on se quitte ?","Le hasard, le hasard !","Qu’est-ce qui nous rapproche ? Qui nous rabiboche ?","Encore le hasard !","Ah ! Qui nous fait la nique ? Nous tourne en bourrique ?","Oui, c’est le hasard !"]}]},
  {id:"madame",oe:"Madame 21",titre:"Finale",couplets:[
   {l:"Couplet",v:["Nous sommes tous comme des papas","Attendant anxieux le résultat :","Est-ce une fille, un garçon ?","Dites-le sans façon,","Les acteurs ont peur autant que les auteurs !","Si vous aimez tout ça, nous s’rons contents","Mon p’tit système aura-t-il su vous plaire ?","Nous avons joué tout ça pour vous distraire","Et maintenant c’est l’instant palpitant !","Quand on aim’quéqu’chose on l’dit, sapristi,","On l’dit et puis c’est fini !","La seule chose que l’on souhaite,","C’est qu’après cette opérette","Chacun d’vous répète","Elle n’est pas du tout si mal que ça !","On s’y ras’ bien moins qu’à l’opéra !","C’est honnête, pas trop bête,","On y r’viendra !","Elle n’est pas si mal,","Non pas si mal que ça !"]}]},
  {id:"phi1",oe:"Phi-Phi 01",titre:"Les modèles",couplets:[
@@ -121,11 +122,11 @@ const SONGS=[
   {l:"Couplet 2",v:["C’est moi qui ai posé pour le dos de la fameuse Diane d’Ephèse,","Moi, c’est ma tête qui servit pour la Victoire de Samothrace"]}]},
  {id:"phi7",oe:"Phi-Phi 07",titre:"Pour l’amour Ardimedon",couplets:[
   {l:"Couplet 1",v:["Il vous dit simplement","De quitter votre vêtement","Pour admirer votre plastique"]},
-  {l:"Couplet 2",v:["C'est un modèle, la ligne est belle,","Ni gras ni gros, il est plutôt costaud !","Même il me semble que dans l'ensemble,","Ce jeune homme a tout ce qu'il faut !"]},
+  {l:"Couplet 2",v:["C’est un modèle, la ligne est belle,","Ni gras ni gros, il est plutôt costaud !","Même il me semble que dans l’ensemble,","Ce jeune homme a tout ce qu’il faut !"]},
   {l:"Couplet 3",v:["Ça c’est unique, et très comique,","Ce grand artiste qui le choisit pour","Oui pour qu’il fasse, ça c’est cocasse,","Oui pour qu’il fasse l’amour !"]},
   {l:"Couplet 4",v:["Pour l’amour, pour l’amour,","Il a des dispositions","A Cythèr’ il prit des leçons","Il alla même à Singapour, pour l’amour, pour l’amour","Il est tellement en effet, fait !","Qu’pour nous plaire, il veut faire, nuit et jour, l’amour"]},
   {l:"Couplet 5",v:["Ardimedon Ardimedon Ardimedon,","C’est vraiment un joli nom !","Ardimedon Ardimedon,","Ce nom contient tout un programme !","Tout un programme qui plaît aux femmes !"]},
-  {l:"Couplet 6",v:[“Il le porte avec aplomb,”,” Ardimedon Ardimedon,”,”Joyeusement que l’on acclame,”,”Que l’on acclame Ardimedon !”]},
+  {l:"Couplet 6",v:["Il le porte avec aplomb,","Ardimedon Ardimedon,","Joyeusement que l’on acclame,","Que l’on acclame Ardimedon !"]},
   {l:"Couplet 7",v:["Si parmi nous il reste, on va le débaucher,","On l’amusera, on le dorlott’ra, on l’adorera.","De grand cœur disons-lui donc :","Ardimedon ! Ardimedon !","Ce nom contient tout un programme","Qui plaît aux femmes. Il le porte avec aplomb","Ardimedon ! Ardimedon !","Joyeusement, que l’on acclame","Que l’on acclame, que l’on acclame","Ardimedon ! Que l’on acclame","Ardimedon, Ardimedon !"]}]},
  {id:"plm7",oe:"PLM 07",titre:"Tout nus",couplets:[
   {l:"Couplet",v:["Ça n’se fait pas, ça n’se fait pas,","Quand on est des gens du meilleur des mondes"]}]},
@@ -142,8 +143,12 @@ const HELP={
 };
 
 const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const MODES=["lire","ini","trous","ligne"];
 const S={song:store.get("op27.song",SONGS[0].id),mode:store.get("op27.mode","lire"),pct:store.get("op27.pct",40),hint:store.get("op27.hint",true),su:store.get("op27.su",{}),seed:Date.now()%100000,step:{}};
 if(!SONGS.find(s=>s.id===S.song))S.song=SONGS[0].id;
+if(!MODES.includes(S.mode))S.mode="lire";
+if(!(S.pct>=10&&S.pct<=100))S.pct=40;
+if(!S.su||typeof S.su!=="object")S.su={};
 
 const WORD=/([\p{L}\p{N}’'\-]+)/u;
 function rng(seed){let s=seed>>>0||1;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
@@ -168,7 +173,8 @@ function renderNav(){
   nav.innerHTML=SONGS.map(s=>{const n=s.couplets.filter(c=>S.su[s.id+"|"+c.l]).length;
     return `<button data-s="${s.id}" aria-current="${s.id===S.song}"><span><span class="oe">${esc(s.oe)}</span>${esc(s.titre)}</span><span class="cnt">${n}/${s.couplets.length}</span></button>`}).join("");
   pick.innerHTML=SONGS.map(s=>`<option value="${s.id}"${s.id===S.song?" selected":""}>${esc(s.oe)} · ${esc(s.titre)}</option>`).join("");
-  const tot=SONGS.reduce((a,s)=>a+s.couplets.length,0),ok=Object.values(S.su).filter(Boolean).length;
+  const tot=SONGS.reduce((a,s)=>a+s.couplets.length,0);
+  const ok=SONGS.reduce((a,s)=>a+s.couplets.filter(c=>S.su[s.id+"|"+c.l]).length,0);
   document.getElementById("progress").innerHTML=`<b>${ok}</b> couplets sus sur ${tot}`;
 }
 function renderOpts(){
@@ -188,7 +194,7 @@ function renderCouplets(){
     const k=key(c.l),su=!!S.su[k];let body;
     if(S.mode==="ligne"){
       const st=S.step[k]||0;
-      body=`<ol class="lines">${c.v.map((ln,i)=>i<st?`<li>${esc(ln)}</li>`:i===st?(S.hint?`<li class="next">${hintLine(ln)}</li>`:`<li class="veil">${esc(ln)}</li>`):`<li class="veil">${esc(ln)}</li>`).join("")}</ol>
+      body=`<ol class="lines">${c.v.map((ln,i)=>i<st?`<li>${esc(ln)}</li>`:i===st&&S.hint?`<li class="next">${hintLine(ln)}</li>`:`<li class="veil" aria-hidden="true">${esc(ln)}</li>`).join("")}</ol>
       <div class="stepbar"><button class="btn" data-next="${ci}"${st>=c.v.length?" disabled":""}>${st>=c.v.length?"Couplet terminé":"Révéler la ligne "+(st+1)+" / "+c.v.length}</button><button class="btn" data-reset="${ci}">Recommencer</button></div>`;
     }else body=`<ol class="lines">${c.v.map(ln=>`<li>${S.mode==="lire"?esc(ln):renderLine(ln,S.mode,r)}</li>`).join("")}</ol>`;
     return `<section class="couplet${su?" su":""}"><div class="chead"><h3>${esc(c.l)}</h3><label class="chk"><input type="checkbox" id="su-${s.id}-${ci}" data-su="${ci}"${su?" checked":""}> Je le connais</label></div>${body}</section>`;
@@ -196,10 +202,10 @@ function renderCouplets(){
 }
 function render(){renderNav();renderOpts();renderCouplets()}
 
-function reveal(el){if(!el.classList.contains("w")||el.classList.contains("shown"))return;el.textContent=el.dataset.w;el.classList.remove("hid","ini");el.classList.add("shown")}
+function reveal(el){if(!el.classList.contains("w")||el.classList.contains("shown"))return;el.textContent=el.dataset.w;el.classList.remove("hid","ini");el.classList.add("shown");el.removeAttribute("tabindex")}
 
 document.addEventListener("click",e=>{
-  const t=e.target.closest("button,span.w,input");if(!t)return;
+  const t=e.target.closest("button,span.w");if(!t||t.disabled)return;
   if(t.dataset.s){S.song=t.dataset.s;store.set("op27.song",S.song);S.seed++;render();window.scrollTo({top:0});return}
   if(t.dataset.m){S.mode=t.dataset.m;store.set("op27.mode",S.mode);S.seed++;renderOpts();renderCouplets();return}
   if(t.classList.contains("w")){reveal(t);return}
@@ -212,7 +218,7 @@ document.addEventListener("click",e=>{
 document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList&&e.target.classList.contains("w")){e.preventDefault();reveal(e.target)}});
 document.addEventListener("change",e=>{
   const t=e.target;
-  if(t.dataset.su!=null){const k=key(song().couplets[+t.dataset.su].l);S.su[k]=t.checked;if(!t.checked)delete S.su[k];store.set("op27.su",S.su);t.closest(".couplet").classList.toggle("su",t.checked);renderNav();return}
+  if(t.dataset.su!=null){const k=key(song().couplets[+t.dataset.su].l);if(t.checked)S.su[k]=true;else delete S.su[k];store.set("op27.su",S.su);t.closest(".couplet").classList.toggle("su",t.checked);renderNav();return}
   if(t.id==="hint"){S.hint=t.checked;store.set("op27.hint",S.hint);renderCouplets();return}
   if(t.id==="pick"){S.song=t.value;store.set("op27.song",S.song);S.seed++;render()}
 });
